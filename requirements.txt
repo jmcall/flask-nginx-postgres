@@ -1,0 +1,7 @@
+Flask
+Flask-Jsonpify
+flask-requests
+Flask-RESTful
+Flask-SQLAlchemy
+requests
+SQLAlchemy

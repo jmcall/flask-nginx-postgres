@@ -1,0 +1,54 @@
+version: "3"
+services:
+  db:
+    image: postgres:latest
+    container_name: db-flask-app1
+    restart: unless-stopped
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      flask-net:
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-flask-app1
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./key.pem:/root/ssl/key.pem
+      - ./cert.pem:/root/ssl/cert.pem
+    networks:
+      flask-net:
+
+  flask:
+    image: flask-app1
+    container_name: flask-app1
+    build:
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./app:/home/flask-docker-compose
+    networks:
+      flask-net:
+        ipv4_address: 192.168.90.20
+
+networks:
+  flask-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.90.0/24"
+
+volumes:
+  db-data:
+
+
+    
+
